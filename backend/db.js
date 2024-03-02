@@ -1,17 +1,41 @@
-const mongo = require("mongoose");
+// backend/db.js
+const mongoose = require("mongoose");
+const connecctionString = require("./connection");
+mongoose.connect(connecctionString.uri);
 
-mongo.connect(connecctionString.uri);
-
-const userSchema = new mongo.Schema({
-	username: String,
-	password: String,
-	firstname: String,
-	lastname: String,
+// Create a Schema for Users
+const userSchema = new mongoose.Schema({
+	username: {
+		type: String,
+		required: true,
+		unique: true,
+		trim: true,
+		lowercase: true,
+		minLength: 3,
+		maxLength: 30,
+	},
+	password: {
+		type: String,
+		required: true,
+		minLength: 6,
+	},
+	firstName: {
+		type: String,
+		required: true,
+		trim: true,
+		maxLength: 50,
+	},
+	lastName: {
+		type: String,
+		required: true,
+		trim: true,
+		maxLength: 50,
+	},
 });
 
-const accountSchema = new mongo.Schema({
+const accountSchema = new mongoose.Schema({
 	userId: {
-		type: mongo.Schema.Types.ObjectId,
+		type: mongoose.Schema.Types.ObjectId, // Reference to User model
 		ref: "User",
 		required: true,
 	},
@@ -21,9 +45,8 @@ const accountSchema = new mongo.Schema({
 	},
 });
 
-const Account = mongo.model("Account", accountSchema);
-s;
-const User = mongo.model("User", userSchema);
+const Account = mongoose.model("Account", accountSchema);
+const User = mongoose.model("User", userSchema);
 
 module.exports = {
 	User,
